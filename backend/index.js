@@ -6,7 +6,7 @@ import { todoSchema } from './models/todoSchema.js'
 import { createTodoRouter } from './routers/todoRouter.js'
 
 const port = Number(process.env.PORT ?? 5000)
-const mongoUri = process.env.MONGODB_URI ?? 'mongodb://127.0.0.1:27017/todo-backend'
+const mongoUri = process.env.MONGODB_URI ?? process.env.MONGO_URI ?? 'mongodb://127.0.0.1:27017/todo-backend'
 const mongoClient = new MongoClient(mongoUri)
 const app = express()
 const localFrontendOrigin = /^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?$/
