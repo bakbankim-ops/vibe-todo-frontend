@@ -10,11 +10,18 @@ const mongoUri = process.env.MONGODB_URI ?? 'mongodb://127.0.0.1:27017/todo-back
 const mongoClient = new MongoClient(mongoUri)
 const app = express()
 const localFrontendOrigin = /^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?$/
+const configuredFrontendOrigins = new Set(
+  (process.env.FRONTEND_ORIGIN ?? '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+)
 
 app.set('etag', false)
 app.use(cors({
   origin(origin, callback) {
-    callback(null, !origin || localFrontendOrigin.test(origin))
+    // Allow local development plus the URLs explicitly configured for deployment.
+    callback(null, !origin || localFrontendOrigin.test(origin) || configuredFrontendOrigins.has(origin))
   },
   methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type'],
